@@ -1,0 +1,30 @@
+This is a sample application based on the EnhancedViews concept.
+
+An EnhancedView represents itself by providing the following information:
+
+1) A title icon (optional, Component)
+2) A title (nls enabled)
+
+3) A backed object (optional, can be used to refer business data behind the view)
+
+4) A content (Component)
+5) A toolbar (optional, Will be shown in the title)
+6) A header (optional, will be shown as header)
+7) A footer (optional, will be shown as footer)
+
+Enhanced Views can be displayed using an EnhancedViewContainer:
+
+A) EnhancedTabs
+B) EnhancedDialog
+
+An EnhancedTabs shows every EnhancedView as a tab, the EnhancedDialog shows one EnhancedView as a dialog.
+All EnhancedViewContainers try to create their components lazy on demand. Created components will be cached so they don't loose their state.
+
+The EnhancedTabs allow reordering and drag and drop of their tabs, on the same EnhancedTabs or to an other EnhancedTabs.
+A double-click on a tab of the tabs or the title of a dialog switches the EnhancedView between a tab and a dialog.
+
+EnhancedViews can be closeable (or not) and have the possibility to react to close, including veto or a deferred confirmation.
+
+Hope you enjoy the metainfo-vaadin-components, would be nice to see your comment in the Vaadin Directory ...
+
+regards, Tom (askpythia)

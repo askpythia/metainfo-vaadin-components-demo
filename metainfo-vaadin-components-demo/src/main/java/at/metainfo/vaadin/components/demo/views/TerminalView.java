@@ -1,7 +1,6 @@
 package at.metainfo.vaadin.components.demo.views;
 
 import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.CursorStyle;
-import com.flowingcode.vaadin.addons.xterm.ITerminalOptions.RendererType;
 import com.flowingcode.vaadin.addons.xterm.XTerm;
 import com.github.javafaker.Faker;
 import com.vaadin.flow.component.AttachEvent;
@@ -10,6 +9,7 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 
 import at.metainfo.enhanced.Closeable;
@@ -62,8 +62,22 @@ public class TerminalView implements IEnhancedView, IGuiUtilities {
 	}
 
 	@Override
+	public Component createFooter() {
+		HorizontalLayout footer = toolbar(
+			VaadinIcon.ABACUS.create(),
+			VaadinIcon.ACADEMY_CAP.create()
+		);
+		/*
+		 * The default alignment for components in the footer is on the right side (margin-left: auto)
+		 * using the following line would position the components in the footer on the left side (get the whole width)
+		 */
+		//footer.setWidthFull();
+		return footer;
+	}
+
+	@Override
 	public void resize() {
-		xterm.fit();
+		if(xterm != null) xterm.fit();
 	}
 
 	@Override
@@ -87,6 +101,10 @@ public class TerminalView implements IEnhancedView, IGuiUtilities {
 	@SuppressWarnings("serial")
 	private XTerm createXterm() {
 		xterm = new XTerm() {
+			/* 
+			 * Xterm has a problem when it will be detatched and re-attached
+			 * A quick-fix is to re-instanciate a new Xterm when detach / re-attach happens
+			 */
 			boolean detached = false;
 			@Override
 			protected void onAttach(AttachEvent attachEvent) {
@@ -97,15 +115,14 @@ public class TerminalView implements IEnhancedView, IGuiUtilities {
 				detached = true;
 			}
 		};
+
 		xterm.setCursorStyle(CursorStyle.BLOCK);
 		xterm.setCursorBlink(true);
 		xterm.setFitOnResize(true);
 		xterm.setRightClickSelectsWord(true);
 
-		xterm.setRendererType(RendererType.CANVAS);
-		//xterm.setRendererType(RendererType.DOM);
-
 		xterm.writeln(faker.chuckNorris().fact());
+
 		return xterm;
 	}
 }
