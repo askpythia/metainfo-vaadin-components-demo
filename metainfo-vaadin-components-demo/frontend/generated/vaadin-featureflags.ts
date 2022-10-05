@@ -2,11 +2,9 @@
 window.Vaadin = window.Vaadin || {};
 window.Vaadin.featureFlags = window.Vaadin.featureFlags || {};
 window.Vaadin.featureFlags.exampleFeatureFlag = false;
+window.Vaadin.featureFlags.viteForFrontendBuild = false;
+window.Vaadin.featureFlags.mapComponent = false;
 window.Vaadin.featureFlags.spreadsheetComponent = false;
 window.Vaadin.featureFlags.hillaPush = false;
-window.Vaadin.featureFlags.hillaEngine = false;
-window.Vaadin.featureFlags.oldLicenseChecker = false;
+window.Vaadin.featureFlags.newLicenseChecker = false;
 window.Vaadin.featureFlags.collaborationEngineBackend = false;
-window.Vaadin.featureFlags.webpackForFrontendBuild = true;
-window.Vaadin.featureFlags.enforceFieldValidation = false;
-export {};

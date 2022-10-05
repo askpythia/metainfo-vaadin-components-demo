@@ -9,6 +9,7 @@ import org.vaadin.filesystemdataprovider.FileSelect;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.treegrid.TreeGrid;
@@ -23,13 +24,15 @@ public class FilesystemView extends Div implements IEnhancedView, IGuiUtilities 
 
 	private Path path;
 	private EnhancedTabs editors;
+	private EnhancedTabs tools;
 	private boolean closeable;
 
 	private Registration treeDoubleClickRegistration;
 
-	public FilesystemView(Path path, EnhancedTabs editors, boolean closeable) {
+	public FilesystemView(Path path, EnhancedTabs editors, EnhancedTabs tools, boolean closeable) {
 		this.path = path;
 		this.editors = editors;
+		this.tools = tools;
 		this.closeable = closeable;
 		setSizeFull();
 	}
@@ -57,7 +60,7 @@ public class FilesystemView extends Div implements IEnhancedView, IGuiUtilities 
 	@Override
 	public Component createToolbar() {
 		return toolbar(
-			new Button(VaadinIcon.CODE.create(), event -> editors.selectTab(editors.addViewTab(new FilesystemView(Paths.get("src/main/java/at/metainfo/vaadin/components/demo"), editors, true)))),
+			new Button(VaadinIcon.CODE.create(), event -> editors.selectTab(editors.addViewTab(new FilesystemView(Paths.get("src/main/java/at/metainfo/vaadin/components/demo"), editors, tools, true)))),
 			new Button(VaadinIcon.REFRESH.create(), event -> reset())
 		);
 	}
@@ -78,11 +81,26 @@ public class FilesystemView extends Div implements IEnhancedView, IGuiUtilities 
 			File item = event.getItem();
 			if(item != null) {
 				if(item.isDirectory()) {
-					editors.selectTab(editors.addViewTab(new FilesystemView(item.toPath(), editors, true)));
+					editors.selectTab(editors.addViewTab(new FilesystemView(item.toPath(), editors, tools, true)));
+				} else if(item.getName().endsWith(".html")) {
+					editors.selectTab(editors.addViewTab(new CkEditorView(item.toPath())));
 				} else {
 					editors.selectTab(editors.addViewTab(new AceEditorView(item.toPath())));
 				}
 			}
+		});
+		GridContextMenu<File> contextMenu = treeGrid.addContextMenu();
+		contextMenu.setDynamicContentHandler(file -> {
+			contextMenu.removeAll();
+			if(file.isDirectory()) {
+				contextMenu.addItem("Open Terminal", event -> {
+					if(event.getItem().isPresent()) {
+						tools.selectTab(tools.addViewTab(new TerminalView(event.getItem().get().toPath())));
+					}
+				});
+				return true;
+			}
+			return false;
 		});
 		resize();
 		return fileSelect;
