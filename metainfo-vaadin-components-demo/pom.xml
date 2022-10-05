@@ -15,7 +15,7 @@
 	<description>Demo page for metainfo-vaadin-components</description>
 	<properties>
 		<java.version>17</java.version>
-		<vaadin.version>23.2.0</vaadin.version>
+		<vaadin.version>23.2.3</vaadin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -26,6 +26,11 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-confirm-dialog-flow</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spreadsheet-flow</artifactId>
 		</dependency>
 
 		<dependency>

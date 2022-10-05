@@ -2,7 +2,9 @@ package at.metainfo.vaadin.components.demo.views;
 
 import java.nio.file.Path;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 import at.metainfo.enhanced.IEnhancedView;
@@ -43,10 +45,25 @@ public class TerminalView implements IEnhancedView {
 		return toolbar(xterm.actions(XtermAction.values()));
 	}
 
+	@SuppressWarnings("serial")
 	private void init() {
 		MetainfoVaadinComponentsDemoApplication app = SpringContext.getBean(MetainfoVaadinComponentsDemoApplication.class);
 		if(xterm == null) { 
-			xterm = new Xterm(app.contextPath() + XtermConfiguration.XTERM_CONTEXT, path);
+			xterm = new Xterm(app.contextPath() + XtermConfiguration.XTERM_CONTEXT, path) {
+				/* 
+				 * Xterm has a problem when it will be detatched and re-attached
+				 * A quick-fix is to re-instanciate a new Xterm when detach / re-attach happens
+				 */
+				boolean detached = false;
+				@Override
+				protected void onAttach(AttachEvent attachEvent) {
+					if(detached) init();
+				}
+				@Override
+				protected void onDetach(DetachEvent detachEvent) {
+					detached = true;
+				}
+			};
 		}
 	}
 }

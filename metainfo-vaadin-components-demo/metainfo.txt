@@ -8,7 +8,7 @@ An EnhancedView represents itself by providing the following information:
 3) A backed object (optional, can be used to refer business data behind the view)
 
 4) A content (Component)
-5) A toolbar (optional, Will be shown in the title)
+5) A toolbar (optional, will be shown in the title)
 6) A header (optional, will be shown as header)
 7) A footer (optional, will be shown as footer)
 

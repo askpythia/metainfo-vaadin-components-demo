@@ -9,9 +9,7 @@ import java.util.Locale;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 
 import at.metainfo.color.Css3Color;
@@ -19,13 +17,12 @@ import at.metainfo.enhanced.EnhancedTabs;
 import at.metainfo.utilities.IGuiUtilities;
 import at.metainfo.vaadin.components.demo.views.AceEditorView;
 import at.metainfo.vaadin.components.demo.views.CkEditorView;
-import at.metainfo.vaadin.components.demo.views.FilesystemView;
 import at.metainfo.vaadin.components.demo.views.ConsoleView;
+import at.metainfo.vaadin.components.demo.views.FilesystemView;
 import at.metainfo.vaadin.components.demo.views.TextAreaView;
 
 @SuppressWarnings("serial")
 @Route("")
-@PreserveOnRefresh
 public class MetainfoVaadinComponentsDemo extends Div implements IGuiUtilities {
 
 	public MetainfoVaadinComponentsDemo() {

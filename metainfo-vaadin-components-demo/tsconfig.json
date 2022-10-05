@@ -8,7 +8,7 @@
     "sourceMap": true,
     "inlineSources": true,
     "module": "esNext",
-    "target": "es2017",
+    "target": "es2019",
     "moduleResolution": "node",
     "strict": true,
     // all the following false are to allow as much native js as possible

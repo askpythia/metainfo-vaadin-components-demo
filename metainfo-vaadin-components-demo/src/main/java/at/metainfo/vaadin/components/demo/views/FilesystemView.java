@@ -79,13 +79,18 @@ public class FilesystemView extends Div implements IEnhancedView, IGuiUtilities 
 		TreeGrid<File> treeGrid = getTreeGrid(fileSelect);
 		treeDoubleClickRegistration = treeGrid.addItemDoubleClickListener(event -> {
 			File item = event.getItem();
-			if(item != null) {
+			String name = item == null ? null : item.getName().toLowerCase();
+			if(item != null && name != null) {
 				if(item.isDirectory()) {
 					editors.selectTab(editors.addViewTab(new FilesystemView(item.toPath(), editors, tools, true)));
-				} else if(item.getName().endsWith(".html")) {
-					editors.selectTab(editors.addViewTab(new CkEditorView(item.toPath())));
 				} else {
-					editors.selectTab(editors.addViewTab(new AceEditorView(item.toPath())));
+					if(name.endsWith(".html") || name.endsWith(".htm")) {
+						editors.selectTab(editors.addViewTab(new CkEditorView(item.toPath())));
+					} else if(name.endsWith(".xlsx") || name.endsWith(".xls")) {
+						editors.selectTab(editors.addViewTab(new SpreadsheetView(item.toPath())));
+					} else {
+						editors.selectTab(editors.addViewTab(new AceEditorView(item.toPath())));
+					}
 				}
 			}
 		});
