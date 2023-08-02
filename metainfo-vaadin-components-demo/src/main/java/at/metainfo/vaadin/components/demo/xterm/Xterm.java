@@ -10,10 +10,12 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 @SuppressWarnings("serial")
-@NpmPackage(value="xterm", version="^4.18.0")
-@NpmPackage(value="xterm-addon-fit", version="^0.5.0")
-@NpmPackage(value="xterm-addon-web-links", version="^0.5.1")
-@NpmPackage(value="xterm-addon-search", version="^0.8.2")
+@NpmPackage(value="xterm", version="^5.2.1")
+@NpmPackage(value="xterm-addon-fit", version="^0.7.0")
+@NpmPackage(value="xterm-addon-web-links", version="^0.8.0")
+@NpmPackage(value="xterm-addon-search", version="^0.12.0")
+//@NpmPackage(value="xterm-addon-unicode11", version="^0.5.0")
+//@NpmPackage(value="xterm-addon-web-fonts", version="^1.0.1")
 @CssImport("xterm/css/xterm.css")
 @JavaScript("./components/xterm-connector.js")
 public class Xterm extends Div {
@@ -45,7 +47,7 @@ public class Xterm extends Div {
     }
 
     public void setFontSize(int fontSize) {
-    	getElement().executeJs("this.info.terminal.setOption('fontSize', $0)", fontSize);
+    	getElement().executeJs("this.info.terminal.options.fontSize=$0", fontSize);
     	fit();
     	focus();
     }
@@ -59,12 +61,12 @@ public class Xterm extends Div {
     }
 
     public void setWhiteTheme() {
-    	getElement().executeJs("this.info.terminal.setOption('theme', {background: '#FFFFFF', foreground: '#000000', selection: '#303030', cursor: '#000000'})");
+    	getElement().executeJs("this.info.terminal.options.theme = {background: '#FFFFFF', foreground: '#000000', selectionForeground: '#C0C0C0', selectionBackground: '#303030', cursor: '#000000'}");
     	focus();
     }
 
     public void setBlackTheme() {
-    	getElement().executeJs("this.info.terminal.setOption('theme', {background: '#000000', foreground: '#FFFFFF', selection: '#C0C0C0', cursor: '#FFFFFF'})");
+    	getElement().executeJs("this.info.terminal.options.theme = {background: '#000000', foreground: '#FFFFFF', selectionForeground: '#303030', selectionBackground: '#C0C0C0', cursor: '#FFFFFF'}");
     	focus();
     }
 

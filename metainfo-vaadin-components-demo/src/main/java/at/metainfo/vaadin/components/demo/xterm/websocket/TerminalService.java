@@ -87,6 +87,10 @@ public class TerminalService {
 			printReader(errorReader);
 		});
 		this.isReady = true;
+		
+		process.onExit().thenRun(() -> {
+			System.out.println("Process exit");
+		});
 	}
 
 	public void print(String text) throws IOException {

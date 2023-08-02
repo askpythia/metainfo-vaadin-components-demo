@@ -4,36 +4,36 @@
 // You might want to change the configurations to fit your preferences
 // For more information about the configurations, please refer to http://www.typescriptlang.org/docs/handbook/tsconfig-json.html
 {
+  "flow_version": "23.3.4",
   "compilerOptions": {
     "sourceMap": true,
+    "jsx": "react-jsx",
     "inlineSources": true,
     "module": "esNext",
-    "target": "es2019",
+    "target": "es2020",
     "moduleResolution": "node",
     "strict": true,
-    // all the following false are to allow as much native js as possible
-    "noFallthroughCasesInSwitch": false,
-    "noImplicitReturns": false,
-    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
     "noImplicitThis": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports" : true,
-    "baseUrl": "src/main/resources/META-INF/resources/frontend/*",
+    "useDefineForClassFields": false,
+    "baseUrl": "frontend",
     "paths": {
-      "Frontend/*": [
-        "*"
-      ],
-      "Frontend/*": [
-        "src/main/resources/META-INF/resources/frontend/*"
-      ]      
+      "@vaadin/flow-frontend": ["generated/jar-resources"],
+      "@vaadin/flow-frontend/*": ["generated/jar-resources/*"],
+      "Frontend/*": ["*"]
     }
   },
   "include": [
-    "frontend/**/*.ts",
-    "src/main/resources/META-INF/resources/frontend/**/*.ts",
+    "frontend/**/*",
     "types.d.ts"
   ],
-  "exclude": []
+  "exclude": [
+    "frontend/generated/jar-resources/**"
+  ]
 }

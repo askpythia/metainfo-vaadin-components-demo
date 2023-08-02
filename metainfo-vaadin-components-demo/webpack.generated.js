@@ -72,7 +72,7 @@ const tsconfigJsonFile = path.resolve(__dirname, 'tsconfig.json');
 const enableTypeScript = fs.existsSync(tsconfigJsonFile);
 
 // Target flow-fronted auto generated to be the actual target folder
-const flowFrontendFolder = path.resolve(__dirname, 'target/flow-frontend');
+const flowFrontendFolder = path.resolve(__dirname, 'frontend/generated/jar-resources');
 
 const statsSetViaCLI = process.argv.find((v) => v.indexOf('--stats') >= 0);
 const devMode = process.argv.find((v) => v.indexOf('webpack-dev-server') >= 0);
@@ -174,7 +174,7 @@ const createServiceWorkerPlugin = function () {
 const flowFrontendThemesFolder = path.resolve(flowFrontendFolder, 'themes');
 const themeOptions = {
   devMode: devMode,
-  // The following matches folder 'target/flow-frontend/themes/'
+  // The following matches folder 'frontend/generated/jar-resources/themes/'
   // (not 'frontend/themes') for theme in JAR that is copied there
   themeResourceFolder: flowFrontendThemesFolder,
   themeProjectFolders: themeProjectFolders,
@@ -305,8 +305,8 @@ module.exports = {
                 if (resourcePath.match(/(\\|\/)node_modules\1/)) {
                   return /(\\|\/)node_modules\1(?!.*node_modules)([\S]+)/.exec(resourcePath)[2].replace(/\\/g, '/');
                 }
-                if (resourcePath.match(/(\\|\/)flow-frontend\1/)) {
-                  return /(\\|\/)flow-frontend\1(?!.*flow-frontend)([\S]+)/.exec(resourcePath)[2].replace(/\\/g, '/');
+                if (resourcePath.match(/(\\|\/)generated\1jar-resources\1/)) {
+                  return /(\\|\/)generated\1jar-resources\1(?!.*jar-resources)([\S]+)/.exec(resourcePath)[2].replace(/\\/g, '/');
                 }
                 return '[path][name].[ext]';
               }
@@ -344,7 +344,7 @@ module.exports = {
         const npmModules = nodeModulesFolders
           .map((id) => id.replace(/.*node_modules./, ''))
           .map((id) => {
-            const parts = id.split('/');
+            const parts = id.split(path.sep);
             if (id.startsWith('@')) {
               return parts[0] + '/' + parts[1];
             } else {

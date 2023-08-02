@@ -1,0 +1,30 @@
+/* LIGHT DOM Styling 4 vaadin-ckeditor */
+vaadin-ckeditor {
+	overflow: hidden;
+}
+vaadin-ckeditor [part="label"] {
+	display: none;
+}
+vaadin-ckeditor [part="label-ul"] {
+	display: none;
+}
+
+vaadin-ckeditor .ck.ck-editor {
+	display: flex;
+    flex-direction: column;
+    height: inherit;
+}
+
+/* Fix 4 the tooltipp under Modal (setCloseOnOutsideClick has to be FALSE) */
+.ck-body-wrapper {
+    pointer-events: auto;
+}
+
+/* Fixed 4 Scrolling within the Editor content (only) */
+#TabsHelpView vaadin-ckeditor .ck-editor__main {
+    height: inherit;
+    overflow: overlay;
+}
+#TabsHelpView > Div {
+	overflow: hidden;
+}
