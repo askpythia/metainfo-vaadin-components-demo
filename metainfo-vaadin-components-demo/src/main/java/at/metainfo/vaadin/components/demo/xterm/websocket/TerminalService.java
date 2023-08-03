@@ -74,6 +74,9 @@ public class TerminalService {
 
 		this.process = new PtyProcessBuilder(termCommand).setEnvironment(envs).setDirectory(userHome).start();
 
+		pid(process.pid());
+		print("Process " + process.pid() + " started\r\n");
+
 		process.setWinSize(new WinSize(columns, rows));
 		this.inputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		this.errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -87,15 +90,27 @@ public class TerminalService {
 			printReader(errorReader);
 		});
 		this.isReady = true;
-		
+
 		process.onExit().thenRun(() -> {
-			System.out.println("Process exit");
+			try {
+				print("\r\nProcess " + process.pid() + " terminated with exit value = " + process.exitValue());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		});
 	}
 
 	public void print(String text) throws IOException {
-		Map<String, String> map = new HashMap<>();
-		map.put("type", "TERMINAL_PRINT");
+		send("TERMINAL_PRINT", text);
+	}
+
+	public void pid(Long pid) throws IOException {
+		if(pid != null) send("TERMINAL_PID", pid.toString());
+	}
+
+	public void send(String type, String text) throws IOException {
+		Map<String, Object> map = new HashMap<>();
+		map.put("type", type);
 		map.put("text", text);
 		String message = new ObjectMapper().writeValueAsString(map);
 		webSocketSession.sendMessage(new TextMessage(message));
@@ -160,5 +175,9 @@ public class TerminalService {
 	public static void start(Runnable runnable) {
 		Thread thread = new Thread(runnable);
 		thread.start();
+	}
+
+	public Long getPid() {
+		return process == null ? null : process.pid();
 	}
 }

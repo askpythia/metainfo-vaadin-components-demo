@@ -7,13 +7,15 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 @SuppressWarnings("serial")
-@NpmPackage(value="xterm", version="^5.2.1")
-@NpmPackage(value="xterm-addon-fit", version="^0.7.0")
-@NpmPackage(value="xterm-addon-web-links", version="^0.8.0")
-@NpmPackage(value="xterm-addon-search", version="^0.12.0")
+@NpmPackage(value = "xterm", version = "^5.2.1")
+@NpmPackage(value = "xterm-addon-fit", version = "^0.7.0")
+@NpmPackage(value = "xterm-addon-web-links", version = "^0.8.0")
+@NpmPackage(value = "xterm-addon-search", version = "^0.12.0")
 //@NpmPackage(value="xterm-addon-unicode11", version="^0.5.0")
 //@NpmPackage(value="xterm-addon-web-fonts", version="^1.0.1")
 @CssImport("xterm/css/xterm.css")
@@ -21,73 +23,107 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 public class Xterm extends Div {
 
 	private int fontSize = 16;
+	private Long pid;
 
-    public Xterm(String wsContext, Path path) {
-    	setSizeFull();
-    	String wd = path.toFile().getAbsolutePath();
-        getElement().executeJs("window.Vaadin.xtermConnector.initialize(this, $0, $1)", wsContext, wd);
-        setWhiteTheme();
-    }
+	public static enum CursorStyle {
+		block, underline, bar;
+	}
 
-    public void fit() {
-    	getElement().executeJs("window.Vaadin.xtermConnector.fit(this)");    	
-    }
+	public Xterm(String wsContext, Path path) {
+		setSizeFull();
+		String wd = path.toFile().getAbsolutePath();
+		getElement().executeJs("window.Vaadin.xtermConnector.initialize(this, $0, $1)", wsContext, wd);
+		setCursorBlink(true);
+		setCursorStyle(CursorStyle.underline);
+		setAltClickMovesCursor(true);
+		setWhiteTheme();
+	}
 
-    public void findNext(String text) {
-    	getElement().executeJs("window.Vaadin.xtermConnector.findNext(this, $0)", text);    	
-    }
+	public Long getPid() {
+		if(pid == null) {
+			getElement().executeJs("return this.info.pid").then(json -> {
+				try {
+					pid = Long.valueOf(json.asString());
+					Notification.show("PID = " + pid, 3000, Position.MIDDLE);
+				} catch(Exception ex) {
+					System.err.println(ex);
+				}
+			});
+		}
+		return pid;
+	}
 
-    public void findPrevious(String text) {
-    	getElement().executeJs("window.Vaadin.xtermConnector.findPrevious(this, $0)", text);    	
-    }
-    
-    public void clear() {
-    	getElement().executeJs("this.info.terminal.clear()");
-    	focus();
-    }
+	public void setCursorBlink(boolean blink) {
+		getElement().executeJs("this.info.terminal.options.cursorBlink=$0", blink);
+	}
 
-    public void setFontSize(int fontSize) {
-    	getElement().executeJs("this.info.terminal.options.fontSize=$0", fontSize);
-    	fit();
-    	focus();
-    }
-    
-    public void setFontSizeLarger() {
-    	setFontSize(++fontSize);
-    }
+	public void setCursorStyle(CursorStyle style) {
+		getElement().executeJs("this.info.terminal.options.cursorStyle=$0", style.name());
+	}
 
-    public void setFontSizeSmaller() {
-    	setFontSize(--fontSize);
-    }
+	public void setAltClickMovesCursor(boolean altClickMovesCursor) {
+		getElement().executeJs("this.info.terminal.options.altClickMovesCursor=$0", altClickMovesCursor);
+	}
 
-    public void setWhiteTheme() {
-    	getElement().executeJs("this.info.terminal.options.theme = {background: '#FFFFFF', foreground: '#000000', selectionForeground: '#C0C0C0', selectionBackground: '#303030', cursor: '#000000'}");
-    	focus();
-    }
+	public void fit() {
+		getElement().executeJs("window.Vaadin.xtermConnector.fit(this)");
+	}
 
-    public void setBlackTheme() {
-    	getElement().executeJs("this.info.terminal.options.theme = {background: '#000000', foreground: '#FFFFFF', selectionForeground: '#303030', selectionBackground: '#C0C0C0', cursor: '#FFFFFF'}");
-    	focus();
-    }
+	public void findNext(String text) {
+		getElement().executeJs("window.Vaadin.xtermConnector.findNext(this, $0)", text);
+	}
 
-    public void focus() {
-    	getElement().executeJs("this.info.terminal.focus()");
-    }
+	public void findPrevious(String text) {
+		getElement().executeJs("window.Vaadin.xtermConnector.findPrevious(this, $0)", text);
+	}
 
-    public void write(String text) {
-    	getElement().executeJs("this.info.terminal.write($0)", text);
-    }
+	public void clear() {
+		getElement().executeJs("this.info.terminal.clear()");
+		focus();
+	}
 
-    public void writeln(String text) {
-    	getElement().executeJs("this.info.terminal.writeln($0)", text);
-    }
+	public void setFontSize(int fontSize) {
+		getElement().executeJs("this.info.terminal.options.fontSize=$0", fontSize);
+		fit();
+		focus();
+	}
 
-    public Component actions(XtermAction... actions) {
+	public void setFontSizeLarger() {
+		setFontSize(++fontSize);
+	}
+
+	public void setFontSizeSmaller() {
+		setFontSize(--fontSize);
+	}
+
+	public void setWhiteTheme() {
+		getElement().executeJs("this.info.terminal.options.theme = {background: '#FFFFFF', foreground: '#000000', selectionForeground: '#C0C0C0', selectionBackground: '#303030', cursor: '#000000'}");
+		focus();
+	}
+
+	public void setBlackTheme() {
+		getElement().executeJs("this.info.terminal.options.theme = {background: '#000000', foreground: '#FFFFFF', selectionForeground: '#303030', selectionBackground: '#C0C0C0', cursor: '#FFFFFF'}");
+		focus();
+	}
+
+	public void focus() {
+		getElement().executeJs("this.info.terminal.focus()");
+	}
+
+	public void write(String text) {
+		getElement().executeJs("this.info.terminal.write($0)", text);
+	}
+
+	public void writeln(String text) {
+		getElement().executeJs("this.info.terminal.writeln($0)", text);
+	}
+
+	public Component actions(XtermAction... actions) {
 		HorizontalLayout actionBar = new HorizontalLayout();
-		for(XtermAction action : actions) {
+		for (XtermAction action : actions) {
 			actionBar.add(action.getAction().apply(this));
 		}
 		actionBar.setWidthFull();
-    	return actionBar;
-    }
+		return actionBar;
+	}
 }

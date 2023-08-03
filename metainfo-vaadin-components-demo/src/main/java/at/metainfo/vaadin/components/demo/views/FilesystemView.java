@@ -16,6 +16,7 @@ import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.shared.Registration;
 
 import at.metainfo.enhanced.EnhancedTabs;
+import at.metainfo.enhanced.EnhancedTabs.Tab;
 import at.metainfo.enhanced.IEnhancedView;
 import at.metainfo.utilities.IGuiUtilities;
 
@@ -100,7 +101,9 @@ public class FilesystemView extends Div implements IEnhancedView, IGuiUtilities 
 			if(file.isDirectory()) {
 				contextMenu.addItem("Open Terminal", event -> {
 					if(event.getItem().isPresent()) {
-						tools.selectTab(tools.addViewTab(new TerminalView(event.getItem().get().toPath())));
+						TerminalView terminalView = new TerminalView(event.getItem().get().toPath());
+						Tab terminalViewTab = tools.addViewTab(terminalView);
+						tools.selectTab(terminalViewTab);
 					}
 				});
 				return true;

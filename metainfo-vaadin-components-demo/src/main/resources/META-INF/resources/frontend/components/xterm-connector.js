@@ -25,7 +25,8 @@ window.Vaadin.xtermConnector = {
 			terminal: terminal,
 			fitAddon: fitAddon,
 			searchAddon: searchAddon,
-			container: container
+			container: container,
+			pid : undefined
 		}
 		container.info = info;
 
@@ -58,6 +59,10 @@ window.Vaadin.xtermConnector = {
 			switch (data.type) {
 				case 'TERMINAL_PRINT':
 					info.terminal.write(data.text);
+					break;
+				case 'TERMINAL_PID':
+					info.pid = data.text;
+					break;
 			}
 		};
 
